@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เกมผจญภัยค้นหาตัวตน - Personality Quest</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            height: 12px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ade80, #3b82f6);
+            border-radius: 20px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .mission-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .mission-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .mission-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .character-dialogue {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(139, 92, 246, 0.3));
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .character-box {
+            display: flex;
+            gap: 20px;
+        }
+
+        .character-emoji {
+            font-size: 60px;
+        }
+
+        .character-content {
+            flex: 1;
+        }
+
+        .character-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .character-story {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+        }
+
+        .question-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .question-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid transparent;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            position: relative;
+        }
+
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.02);
+        }
+
+        .result-container {
+            text-align: center;
+        }
+
+        .result-celebration {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .result-title-main {
+            font-size: 40px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .result-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+        }
+
+        .personality-box {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(251, 146, 60, 0.2));
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .personality-title {
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .personality-desc {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .traits-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .trait-box {
+            border-radius: 20px;
+            padding: 25px;
+        }
+
+        .strengths-box {
+            background: rgba(34, 197, 94, 0.2);
+        }
+
+        .weaknesses-box {
+            background: rgba(249, 115, 22, 0.2);
+        }
+
+        .trait-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .trait-list {
+            list-style: none;
+        }
+
+        .trait-item {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: start;
+            gap: 10px;
+        }
+
+        .careers-box {
+            background: rgba(59, 130, 246, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .careers-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .careers-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .career-tag {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .reset-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            border: none;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .traits-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 25px;
+            }
+
+            .mission-title {
+                font-size: 24px;
+            }
+
+            .personality-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="progressBar" style="display: none;">
+            <div class="progress-text">
+                <span>ความคืบหน้า</span>
+                <span id="progressText">1/5</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="card" id="gameCard"></div>
+    </div>
+
+    <script>
+        const missions = [
+            {
+                id: 1,
+                title: "ด่านที่ 1: หุบเขาแห่งการตัดสินใจ",
+                character: "🧙‍♂️ ปราชญ์แห่งภูเขา",
+                characterEmoji: "🧙‍♂️",
+                story: "ยินดีต้อนรับสู่การผจญภัย! ข้าคือปราชญ์ผู้คอยนำทาง เจ้าได้มาถึงหุบเขาแห่งการตัดสินใจ ที่นี่จะทดสอบว่าเจ้าเผชิญหน้ากับความท้าทายอย่างไร",
+                question: "เมื่อเผชิญกับปัญหาใหญ่ คุณมักจะทำอย่างไร?",
+                icon: "🎯",
+                options: [
+                    { text: "วิเคราะห์ข้อมูลอย่างละเอียดก่อนตัดสินใจ", type: "analytical" },
+                    { text: "ปรึกษาผู้อื่นและรับฟังความคิดเห็น", type: "collaborative" },
+                    { text: "เชื่อสัญชาตญาณและลงมือทำทันที", type: "intuitive" },
+                    { text: "สร้างแผนหลายๆ แบบและเลือกที่ดีที่สุด", type: "strategic" }
+                ]
+            },
+            {
+                id: 2,
+                title: "ด่านที่ 2: ป่าแห่งความสัมพันธ์",
+                character: "🦊 จิ้งจอกปราชญ์",
+                characterEmoji: "🦊",
+                story: "เจ้าก้าวเข้าสู่ป่าที่เต็มไปด้วยสิ่งมีชีวิตนานาชนิด ข้าจิ้งจอกจะทดสอบว่าเจ้าเชื่อมสัมพันธ์กับผู้อื่นอย่างไร",
+                question: "ในงานเลี้ยงหรือการพบปะสังสรรค์ คุณมักจะ?",
+                icon: "👥",
+                options: [
+                    { text: "เข้าสังคมง่าย พูดคุยกับคนใหม่ๆ อย่างสนุกสนาน", type: "extrovert" },
+                    { text: "อยู่กับกลุ่มเพื่อนสนิทและฟังมากกว่าพูด", type: "introvert" },
+                    { text: "สลับไปมาระหว่างการเข้าสังคมและหาที่เงียบๆ พักผ่อน", type: "ambivert" },
+                    { text: "มุ่งเน้นสร้างความสัมพันธ์เชิงลึกกับคนบางคน", type: "selective" }
+                ]
+            },
+            {
+                id: 3,
+                title: "ด่านที่ 3: ทะเลทรายแห่งความคิดสร้างสรรค์",
+                character: "🦅 นกอินทรีแห่งปัญญา",
+                characterEmoji: "🦅",
+                story: "ท่ามกลางทะเลทรายอันกว้างใหญ่ เจ้าพบกับข้าผู้เห็นภาพอนาคต การทดสอบนี้จะเปิดเผยว่าเจ้าใช้จินตนาการอย่างไร",
+                question: "เมื่อต้องแก้ปัญหาหรือทำโปรเจกต์ใหม่ คุณชอบ?",
+                icon: "💡",
+                options: [
+                    { text: "ทำตามระเบียบวิธีที่พิสูจน์แล้วว่าได้ผล", type: "practical" },
+                    { text: "คิดนอกกรอบและทดลองวิธีใหม่ๆ", type: "creative" },
+                    { text: "ปรับปรุงสิ่งที่มีอยู่ให้ดีขึ้น", type: "innovative" },
+                    { text: "รวบรวมไอเดียจากหลายแหล่งมาผสมผสาน", type: "adaptive" }
+                ]
+            },
+            {
+                id: 4,
+                title: "ด่านที่ 4: แม่น้ำแห่งอารมณ์",
+                character: "🐬 โลมาผู้รอบรู้",
+                characterEmoji: "🐬",
+                story: "เจ้ามาถึงแม่น้ำที่ไหลไปตามจังหวะของชีวิต ข้าโลมาจะช่วยให้เจ้าเข้าใจความรู้สึกและการจัดการอารมณ์ของตนเอง",
+                question: "เมื่อเกิดความเครียดหรือความกดดัน คุณมักจะ?",
+                icon: "✨",
+                options: [
+                    { text: "วางแผนและแบ่งงานเป็นส่วนเล็กๆ เพื่อจัดการทีละขั้น", type: "organized" },
+                    { text: "พูดคุยระบายกับเพื่อนหรือคนใกล้ชิด", type: "expressive" },
+                    { text: "หาเวลาอยู่กับตัวเองและทำสิ่งที่ผ่อนคลาย", type: "reflective" },
+                    { text: "มุ่งมั่นทำงานให้สำเร็จแม้จะเหนื่อย", type: "persistent" }
+                ]
+            },
+            {
+                id: 5,
+                title: "ด่านที่ 5: ปราสาทแห่งความทะเยอทะยาน",
+                character: "👑 ราชินีแห่งอนาคต",
+                characterEmoji: "👑",
+                story: "สุดท้ายแล้ว! เจ้ามาถึงปราสาทที่สูงสุด ข้าราชินีจะเปิดเผยเส้นทางอาชีพที่เหมาะสมกับเจ้า",
+                question: "อาชีพในฝันของคุณควรมีลักษณะอย่างไร?",
+                icon: "🏆",
+                options: [
+                    { text: "ได้ช่วยเหลือและสร้างผลกระทบเชิงบวกต่อผู้อื่น", type: "helper" },
+                    { text: "ได้ใช้ความคิดสร้างสรรค์และสร้างสิ่งใหม่ๆ", type: "creator" },
+                    { text: "ได้วิเคราะห์ข้อมูลและแก้ปัญหาที่ซับซ้อน", type: "analyzer" },
+                    { text: "ได้นำทีมและสร้างความเปลี่ยนแปลง", type: "leader" }
+                ]
+            }
+        ];
+
+        let currentMission = 0;
+        let answers = [];
+
+        function updateProgress() {
+            const progress = ((currentMission + 1) / missions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `${currentMission + 1}/${missions.length}`;
+        }
+
+        function renderMission() {
+            document.getElementById('progressBar').style.display = 'block';
+            updateProgress();
+            
+            const mission = missions[currentMission];
+            const card = document.getElementById('gameCard');
+            
+            card.innerHTML = `
+                <div class="mission-header">
+                    <div class="mission-icon">${mission.icon}</div>
+                    <h2 class="mission-title">${mission.title}</h2>
+                </div>
+
+                <div class="character-dialogue">
+                    <div class="character-box">
+                        <div class="character-emoji">${mission.characterEmoji}</div>
+                        <div class="character-content">
+                            <h3 class="character-name">${mission.character}</h3>
+                            <p class="character-story">${mission.story}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-box">
+                    <h3 class="question-text">${mission.question}</h3>
+                </div>
+
+                <div class="options">
+                    ${mission.options.map((option, idx) => `
+                        <button class="option-btn" onclick="handleAnswer('${option.type}')">
+                            ${option.text}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function handleAnswer(type) {
+            answers.push(type);
+            
+            if (currentMission < missions.length - 1) {
+                currentMission++;
+                setTimeout(() => {
+                    renderMission();
+                }, 300);
+            } else {
+                setTimeout(() => {
+                    showResult();
+                }, 300);
+            }
+        }
+
+        function getPersonalityProfile(topTraits) {
+            const traitTypes = topTraits.map(t => t[0]);
+            
+            let profile = {
+                title: "",
+                emoji: "",
+                strengths: [],
+                weaknesses: [],
+                careers: [],
+                description: ""
+            };
+
+            if (traitTypes.includes("analytical") || traitTypes.includes("strategic")) {
+                profile.title = "นักคิดเชิงกลยุทธ์";
+                profile.emoji = "🎯";
+                profile.description = "คุณเป็นคนที่มีความสามารถในการวิเคราะห์และวางแผนอย่างเป็นระบบ มองเห็นภาพใหญ่และรายละเอียดได้พร้อมกัน";
+                profile.strengths = ["คิดวิเคราะห์เป็นเลิศ", "วางแผนระยะยาวได้ดี", "แก้ปัญหาซับซ้อนได้", "ตัดสินใจด้วยเหตุผล"];
+                profile.weaknesses = ["อาจคิดมากเกินไป", "ใช้เวลานานในการตัดสินใจ", "มองข้ามอารมณ์ความรู้สึก"];
+                profile.careers = ["นักวิเคราะห์ข้อมูล", "ที่ปรึกษาธุรกิจ", "นักวิจัย", "วิศวกร", "นักเศรษฐศาสตร์"];
+            } else if (traitTypes.includes("creative") || traitTypes.includes("innovative")) {
+                profile.title = "นักสร้างสรรค์นวัตกร";
+                profile.emoji = "🎨";
+                profile.description = "คุณมีจินตนาการสูง ชอบคิดนอกกรอบและสร้างสิ่งใหม่ๆ ที่ไม่เหมือนใคร มีความเป็นศิลปินในตัว";
+                profile.strengths = ["จินตนาการสูง", "คิดนอกกรอบ", "ปรับตัวเก่ง", "มองเห็นโอกาสใหม่ๆ"];
+                profile.weaknesses = ["อาจไม่ชอบงานซ้ำๆ", "บางครั้งไม่ปฏิบัติตามระเบียบ", "อาจขาดความสม่ำเสมอ"];
+                profile.careers = ["นักออกแบบ", "ครีเอทีฟ", "นักเขียน", "ศิลปิน", "นักพัฒนาผลิตภัณฑ์", "สถาปนิก"];
+            } else if (traitTypes.includes("collaborative") || traitTypes.includes("helper")) {
+                profile.title = "ผู้ประสานและช่วยเหลือ";
+                profile.emoji = "🤝";
+                profile.description = "คุณเป็นคนที่ใส่ใจผู้อื่น ทำงานเป็นทีมได้ดี และมีความสุขเมื่อได้ช่วยเหลือคนรอบข้าง";
+                profile.strengths = ["ทำงานเป็นทีมเยี่ยม", "เข้าใจอารมณ์ผู้อื่น", "สื่อสารได้ดี", "สร้างบรรยากาศดี"];
+                profile.weaknesses = ["อาจใส่ใจผู้อื่นมากเกินไป", "ยากที่จะปฏิเสธคน", "หลีกเลี่ยงความขัดแย้ง"];
+                profile.careers = ["ครู/อาจารย์", "พยาบาล", "นักจิตวิทยา", "HR", "นักสังคมสงเคราะห์", "ที่ปรึกษา"];
+            } else if (traitTypes.includes("leader") || traitTypes.includes("persistent")) {
+                profile.title = "ผู้นำผู้มุ่งมั่น";
+                profile.emoji = "👑";
+                profile.description = "คุณมีความเป็นผู้นำตามธรรมชาติ มีวิสัยทัศน์ และสามารถขับเคลื่อนทีมไปสู่เป้าหมายได้";
+                profile.strengths = ["มีความเป็นผู้นำ", "มุ่งมั่นสู่เป้าหมาย", "ตัดสินใจเด็ดขาด", "สร้างแรงบันดาลใจ"];
+                profile.weaknesses = ["อาจเผด็จการเกินไป", "คาดหวังสูงกับตัวเองและผู้อื่น", "อาจเครียดง่าย"];
+                profile.careers = ["ผู้บริหาร", "ผู้ประกอบการ", "ผู้จัดการโครงการ", "นักการเมือง", "ผู้อำนวยการ"];
+            } else {
+                profile.title = "ผู้สมดุลและยืดหยุ่น";
+                profile.emoji = "⚖️";
+                profile.description = "คุณเป็นคนที่สามารถปรับตัวได้ดี มีความสมดุลระหว่างการคิดและการทำ เหมาะกับงานหลากหลาย";
+                profile.strengths = ["ปรับตัวได้ดี", "รับมือสถานการณ์ได้หลากหลาย", "มีมุมมองกว้าง", "ทำงานได้หลายแบบ"];
+                profile.weaknesses = ["อาจไม่มีความเชี่ยวชาญเฉพาะด้าน", "บางครั้งตัดสินใจลำบาก", "อาจกระจายสมาธิ"];
+                profile.careers = ["ผู้จัดการทั่วไป", "ผู้ประสานงานโครงการ", "นักธุรกิจ", "นักการตลาด", "ผู้ประกอบการ"];
+            }
+
+            return profile;
+        }
+
+        function showResult() {
+            document.getElementById('progressBar').style.display = 'none';
+            
+            // นับคะแนนแต่ละประเภท
+            const scores = {};
+            answers.forEach(type => {
+                scores[type] = (scores[type] || 0) + 1;
+            });
+
+            // เรียงลำดับและเลือก top 3
+            const topTraits = Object.entries(scores)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3);
+
+            const profile = getPersonalityProfile(topTraits);
+            const card = document.getElementById('gameCard');
+
+            card.innerHTML = `
+                <div class="result-container">
+                    <div class="result-celebration">🎊</div>
+                    <h1 class="result-title-main">การผจญภัยสำเร็จ!</h1>
+                    <p class="result-subtitle">คุณได้ค้นพบตัวตนที่แท้จริงของคุณแล้ว</p>
+                </div>
+
+                <div class="personality-box">
+                    <h2 class="personality-title">${profile.emoji} ${profile.title}</h2>
+                    <p class="personality-desc">${profile.description}</p>
+                </div>
+
+                <div class="traits-grid">
+                    <div class="trait-box strengths-box">
+                        <h3 class="trait-title">
+                            <span>✨</span>
+                            <span>จุดแข็งของคุณ</span>
+                        </h3>
+                        <ul class="trait-list">
+                            ${profile.strengths.map(strength => `
+                                <li class="trait-item">
+                                    <span style="color: #4ade80;">✓</span>
+                                    <span>${strength}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="trait-box weaknesses-box">
+                        <h3 class="trait-title">
+                            <span>🎯</span>
+                            <span>จุดพัฒนา</span>
+                        </h3>
+                        <ul class="trait-list">
+                            ${profile.weaknesses.map(weakness => `
+                                <li class="trait-item">
+                                    <span style="color: #fb923c;">⚠</span>
+                                    <span>${weakness}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="careers-box">
+                    <h3 class="careers-title">
+                        <span>🏆</span>
+                        <span>อาชีพที่เหมาะสมกับคุณ</span>
+                    </h3>
+                    <div class="careers-tags">
+                        ${profile.careers.map(career => `
+                            <span class="career-tag">${career}</span>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <button class="reset-btn" onclick="resetGame()">
+                    🔄 ทำแบบทดสอบอีกครั้ง
+                </button>
+            `;
+        }
+
+        function resetGame() {
+            currentMission = 0;
+            answers = [];
+            renderMission();
+        }
+
+        // เริ่มเกม
+        renderMission();
+    </script>
+</body>
+</html>
